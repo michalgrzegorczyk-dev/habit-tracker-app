@@ -1,0 +1,57 @@
+{
+  "name": "habit-tracker",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@analogjs/platform:vite",
+      "defaultConfiguration": "production",
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "sourcemap": false,
+          "mode": "production"
+        }
+      },
+      "outputs": [
+        "{options.outputPath}",
+        "{workspaceRoot}/dist/habit-tracker/.nitro",
+        "{workspaceRoot}/dist/habit-tracker/ssr",
+        "{workspaceRoot}/dist/habit-tracker/analog"
+      ],
+      "options": {
+        "main": "habit-tracker/src/main.ts",
+        "configFile": "habit-tracker/vite.config.ts",
+        "outputPath": "dist/habit-tracker/client",
+        "tsConfig": "habit-tracker/tsconfig.app.json"
+      }
+    },
+    "serve": {
+      "executor": "@analogjs/platform:vite-dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "habit-tracker:build",
+        "port": 4200
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "habit-tracker:build:development",
+          "hmr": true
+        },
+        "production": {
+          "buildTarget": "habit-tracker:build:production"
+        }
+      }
+    },
+    "test": {
+      "executor": "@analogjs/vitest-angular:test",
+      "outputs": [
+        "{projectRoot}/coverage"
+      ]
+    }
+  },
+  "tags": [],
+  "sourceRoot": "./habit-tracker/src"
+}
