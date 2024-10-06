@@ -9,14 +9,13 @@ import {HlmButtonDirective} from "@spartan-ng/ui-button-helm";
   template: `
 
     <div class="flex justify-center pt-6">
-        <button hlmBtn routerLink="predefined">Predefined Habits</button>
-        <button hlmBtn routerLink="tasks">Habit Tasks</button>
+        <button hlmBtn routerLink="habit-tracker">Habit Tracker</button>
+        <button hlmBtn routerLink="predefined-habits">Predefined Habits</button>
+        <button hlmBtn routerLink="habit-tasks">Habit Tasks</button>
     </div>
 
+    <router-outlet></router-outlet>
 
-
-
-
-    <router-outlet></router-outlet> `,
+  `,
 })
 export class AppComponent {}

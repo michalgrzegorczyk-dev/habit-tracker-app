@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
+import HabitTrackerComponent from './habit-tracker/index.page';
 
-import { HabitsComponent } from './habits.component';
 
 @Component({
   selector: 'habit-tracker-home',
   standalone: true,
-  imports: [HabitsComponent],
+  imports: [HabitTrackerComponent],
   template: `<app-habits></app-habits>`,
 })
 export default class HomeComponent {

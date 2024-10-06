@@ -1,18 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-interface Task {
-  id: number;
-  description: string;
-  selected: boolean;
-}
+import { PredefinedHabit, HabitTaskService } from '../../habit-task.service';
+import { HlmButtonDirective } from '@spartan-ng/ui-button-helm';
 
 interface Habit {
   id: number;
   name: string;
   tasks: Task[];
-  isEditing: boolean;
 }
 
 interface DayData {
@@ -23,7 +18,7 @@ interface DayData {
 @Component({
   selector: 'app-habits',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HlmButtonDirective],
   template: `
     <main class="container mx-auto px-4 py-8">
       <header class="text-center mb-12">
@@ -33,9 +28,9 @@ interface DayData {
       </header>
 
       <div class="mb-4 flex justify-between items-center">
-        <button (click)="changeWeek(-1)" class="px-4 py-2 bg-zinc-200 rounded-md">&lt; Previous Week</button>
+        <button (click)="changeWeek(-1)" hlmBtn>Previous Week</button>
         <h2 class="text-2xl font-bold">{{ weekStartDate | date:'MMM d' }} - {{ weekEndDate | date:'MMM d, yyyy' }}</h2>
-        <button (click)="changeWeek(1)" class="px-4 py-2 bg-zinc-200 rounded-md">Next Week &gt;</button>
+        <button (click)="changeWeek(1)" hlmBtn>Next Week</button>
       </div>
 
       <div *ngFor="let day of currentWeek; let i = index" class="mb-8 border rounded-lg p-4 bg-white">
@@ -43,12 +38,10 @@ interface DayData {
 
         <div class="flex flex-wrap gap-4">
           <div *ngFor="let habit of day.habits" class="w-64 p-4 border rounded-lg bg-white shadow">
-            <input [(ngModel)]="habit.name"
-                   placeholder="Habit name"
-                   class="w-full p-2 border rounded mb-4 text-sm">
+            <h4 class="font-bold mb-2">{{ habit.name }}</h4>
             <div class="mb-4 max-h-40 overflow-y-auto">
               <div *ngFor="let task of habit.tasks" class="flex items-center mb-2">
-                <input type="checkbox" [(ngModel)]="task.selected" class="mr-2">
+                <input type="checkbox" [(ngModel)]="task.completed" class="mr-2">
                 <span class="text-sm">{{ task.description }}</span>
               </div>
             </div>
@@ -58,33 +51,46 @@ interface DayData {
           </div>
 
           <!-- Add Habit Card -->
-          <div (click)="addNewHabit(day)"
+          <div (click)="openHabitSelector(day)"
                class="w-64 h-64 flex flex-col items-center justify-center border rounded-lg bg-zinc-100 cursor-pointer hover:bg-zinc-200 transition-colors shadow">
             <div class="text-4xl text-zinc-500 mb-2">+</div>
             <p class="text-zinc-600 font-semibold">Add New Habit</p>
           </div>
         </div>
       </div>
+
+      <!-- Habit Selector Modal -->
+      <div *ngIf="showHabitSelector" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg w-96">
+          <h3 class="text-xl font-bold mb-4">Select a Habit</h3>
+          <div class="mb-4 max-h-60 overflow-y-auto">
+            <div *ngFor="let habit of predefinedHabits"
+                 (click)="selectHabit(habit)"
+                 class="p-2 border rounded mb-2 cursor-pointer hover:bg-zinc-100">
+              {{ habit.name }}
+            </div>
+          </div>
+          <button (click)="closeHabitSelector()" class="w-full px-4 py-2 bg-zinc-200 rounded">Cancel</button>
+        </div>
+      </div>
     </main>
   `,
 })
-export class HabitsComponent implements OnInit {
+export default class HabitTrackerComponent implements OnInit {
   weekDays: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   currentWeek: DayData[] = [];
   weekStartDate: Date = new Date();
   weekEndDate: Date = new Date();
+  predefinedHabits: PredefinedHabit[] = [];
+  showHabitSelector = false;
+  selectedDay: DayData | null = null;
   private nextHabitId = 1;
-  private nextTaskId = 1;
-  availableTasks: Task[] = [
-    { id: 1, description: 'Drink water', selected: false },
-    { id: 2, description: 'Exercise', selected: false },
-    { id: 3, description: 'Read a book', selected: false },
-    { id: 4, description: 'Meditate', selected: false },
-    { id: 5, description: 'Write in journal', selected: false },
-  ];
+
+  constructor(private habitTaskService: HabitTaskService) {}
 
   ngOnInit() {
     this.generateCurrentWeek();
+    this.loadPredefinedHabits();
   }
 
   generateCurrentWeek() {
@@ -113,14 +119,30 @@ export class HabitsComponent implements OnInit {
     this.generateCurrentWeek();
   }
 
-  addNewHabit(day: DayData) {
-    const newHabit: Habit = {
-      id: this.nextHabitId++,
-      name: '',
-      tasks: this.availableTasks.map(task => ({ ...task, id: this.nextTaskId++ })),
-      isEditing: true
-    };
-    day.habits.push(newHabit);
+  loadPredefinedHabits() {
+    this.predefinedHabits = this.habitTaskService.getPredefinedHabits();
+  }
+
+  openHabitSelector(day: DayData) {
+    this.selectedDay = day;
+    this.showHabitSelector = true;
+  }
+
+  closeHabitSelector() {
+    this.showHabitSelector = false;
+    this.selectedDay = null;
+  }
+
+  selectHabit(predefinedHabit: PredefinedHabit) {
+    if (this.selectedDay) {
+      const newHabit: Habit = {
+        id: this.nextHabitId++,
+        name: predefinedHabit.name,
+        tasks: predefinedHabit.tasks.map(task => ({ ...task, completed: false }))
+      };
+      this.selectedDay.habits.push(newHabit);
+      this.closeHabitSelector();
+    }
   }
 
   removeHabit(day: DayData, habit: Habit) {

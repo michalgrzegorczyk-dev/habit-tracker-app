@@ -11,7 +11,7 @@ import {HabitTaskService} from "../../habit-task.service";
     <main class="container mx-auto px-4 py-8">
       <header class="text-center mb-12">
         <h1 class="font-heading font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-4">
-          <span class="text-[#DD0031]">Task</span> Manager
+          <span class="text-[#DD0031]">Habit</span> Tasks
         </h1>
         <p class="max-w-2xl mx-auto text-zinc-600 text-lg">
           Manage tasks that are included in habits.
