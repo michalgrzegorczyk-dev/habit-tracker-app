@@ -1,43 +1,47 @@
 <main class="container mx-auto px-4 py-8">
   <header class="text-center mb-12">
     <h1 class="font-heading font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-4">
-      Predefined <span class="text-[#DD0031]">Habits</span>
+      Habit <span class="text-[#DD0031]">Collections</span>
     </h1>
     <p class="max-w-2xl mx-auto text-zinc-600 text-lg">
-      Create and manage predefined habit templates.
+      Create and manage habit collections
     </p>
   </header>
 
   <div class="mb-8">
     <h2 class="text-2xl font-bold mb-4">Create New Habit Template</h2>
-    <div class="bg-white p-4 rounded-lg shadow">
-      <input [(ngModel)]="newHabitName" placeholder="Habit name" class="w-full p-2 border rounded mb-4">
-      <div class="mb-4">
-        <h3 class="text-lg font-semibold mb-2">Select Tasks:</h3>
-        <div class="max-h-60 overflow-y-auto">
-          <div *ngFor="let task of availableTasks" class="flex items-center mb-2">
-            <input type="checkbox" [id]="'task-' + task.id" [(ngModel)]="task.selected" class="mr-2">
-            <label [for]="'task-' + task.id">
-              {{ task.description }} [{{ task.category }}]
-            </label>
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <form [formGroup]="formGroup" class="mb-4">
+        <input formControlName="habitName" placeholder="Habit name" class="w-full px-4 py-2 rounded-md border border-zinc-300 focus:outline-none focus:ring-2 focus:ring-[#DD0031] focus:border-transparent transition mb-4">
+        <div class="mb-4">
+          <h3 class="text-lg font-semibold mb-2">Select Tasks:</h3>
+          <div class="max-h-60 overflow-y-auto">
+            <div *ngFor="let control of selectedTasksControls; let i = index" class="flex items-center mb-2">
+              <input type="checkbox" [formControl]="control" [id]="'task-' + i" class="mr-2 form-checkbox h-5 w-5 text-[#DD0031] rounded focus:ring-[#DD0031]">
+              <label [for]="'task-' + i">
+                {{ (availableTasks$ | async)?.[i]?.description }} [{{ (availableTasks$ | async)?.[i]?.category }}]
+              </label>
+            </div>
           </div>
         </div>
-      </div>
-      <button (click)="saveNewHabit()" class="px-4 py-2 bg-[#DD0031] text-white rounded">Save Habit Template</button>
+        <button (click)="saveNewHabit()" class="px-4 py-2 bg-[#DD0031] text-white rounded-md hover:bg-[#BB0029] transition-colors focus:outline-none focus:ring-2 focus:ring-[#DD0031] focus:ring-offset-2">
+          Save Habit Template
+        </button>
+      </form>
     </div>
   </div>
 
   <div>
     <h2 class="text-2xl font-bold mb-4">Existing Habit Templates</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div *ngFor="let habit of predefinedHabits" class="bg-white p-4 rounded-lg shadow">
+      <div *ngFor="let habit of predefinedHabits$ | async" class="bg-white p-4 rounded-lg shadow-md">
         <h3 class="text-xl font-bold mb-2">{{ habit.name }}</h3>
         <ul class="mb-4">
           <li *ngFor="let task of habit.tasks" class="mb-1">
-            {{ task.description }} [{{ task.category }}]
+            {{ task?.description }} [{{ task?.category }}]
           </li>
         </ul>
-        <button (click)="deletePredefinedHabit(habit.id)" class="px-4 py-2 bg-red-500 text-white rounded">Delete</button>
+        <button (click)="deletePredefinedHabit(habit.id)" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">Delete</button>
       </div>
     </div>
   </div>

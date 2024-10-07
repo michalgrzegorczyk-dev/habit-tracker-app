@@ -8,10 +8,11 @@ import {HlmButtonDirective} from "@spartan-ng/ui-button-helm";
   imports: [RouterOutlet, RouterLink, HlmButtonDirective],
   template: `
 
-    <div class="flex justify-center pt-6">
-        <button hlmBtn routerLink="habit-tracker">Habit Tracker</button>
-        <button hlmBtn routerLink="predefined-habits">Predefined Habits</button>
-        <button hlmBtn routerLink="habit-tasks">Habit Tasks</button>
+    <div class="flex justify-center gap-4 pt-8">
+        <button hlmBtn variant='link' routerLink="habit-tracker">Habit Tracker</button>
+        <button hlmBtn variant='link' routerLink="predefined-habits">Habit Collections</button>
+        <button hlmBtn variant='link' routerLink="habit-tasks">Single Habit</button>
+        <button hlmBtn variant='link' routerLink="help">Help</button>
     </div>
 
     <router-outlet></router-outlet>

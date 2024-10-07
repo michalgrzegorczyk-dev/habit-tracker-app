@@ -26,6 +26,7 @@ export default class TasksComponent {
         completed: false,
         category: this.formGroup.controls.taskCategory.value ?? ''
       });
+      this.formGroup.reset();
     }
   }
 
