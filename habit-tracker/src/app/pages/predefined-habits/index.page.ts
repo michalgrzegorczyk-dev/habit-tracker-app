@@ -17,7 +17,7 @@ export default class PredefinedHabitsComponent implements OnInit {
   #predefinedHabitsService = inject(PredefinedHabitsService);
   #habitTaskService = inject(HabitTaskService);
   predefinedHabits$ = this.#predefinedHabitsService.getPredefinedHabits();
-  availableTasks$: Observable<Task[]>;
+  availableTasks$ = this.#habitTaskService.getTasks();
 
   formGroup = new FormGroup({
     habitName: new FormControl('', [Validators.required]),
@@ -25,7 +25,6 @@ export default class PredefinedHabitsComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.availableTasks$ = this.#habitTaskService.getTasks();
     this.initializeFormControls();
   }
 
@@ -33,6 +32,7 @@ export default class PredefinedHabitsComponent implements OnInit {
     this.availableTasks$.pipe(
       map(tasks => tasks.map(() => new FormControl(false)))
     ).subscribe(controls => {
+      // @ts-ignore
       this.formGroup.setControl('selectedTasks', new FormArray(controls));
     });
   }
