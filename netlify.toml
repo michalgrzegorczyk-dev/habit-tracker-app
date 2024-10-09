@@ -1,0 +1,5 @@
+# replace "my-analog-app" with the name of the app you want to deploy
+[build]
+  command = "nx build habit-tracker"
+  publish = "dist/habit-tracker/analog/public"
+  functions = "dist/habit-tracker/analog"
