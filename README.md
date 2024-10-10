@@ -2,9 +2,9 @@
 
 https://ng-habit-tracker.netlify.app/
 
-Quickly written habit tracker in AnalogJS, in SPARTAN tech stack, localstorage used only.
+Quickly written Habit Tracker just to get familiar with AnalogJS and SPARTAN tech stack.
 
-I know RxAngular/State is overused, code is ugly, and I do not use server from AnalogJS :-) 
+Local storage used only, ClaudeAI overused. I know RxAngular/State is overused, code is ugly, and I do not use server from AnalogJS.
 
 Maybe to-do: <br>
 - [ ] PWA/Offline
